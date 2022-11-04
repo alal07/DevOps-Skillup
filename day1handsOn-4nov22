@@ -1,3 +1,49 @@
+excercise: copy paste start----
+
+Pull an image from Docker Hub and run it as a container
+Use the docker CLI to list your images.
+docker images
+You should see an empty table (with only headings) since you don't have any images yet.
+
+
+
+Pull your first image from Docker Hub.
+docker pull hello-world
+
+
+List images again.
+docker images
+You should now see the hello-world image present in the table.
+
+
+
+Run the hello-world image as a container.
+docker run hello-world
+You should see a 'Hello from Docker!' message.
+
+There will also be an explanation of what Docker did to generate this message.
+
+
+
+List the containers to see that your container ran and exited successfully.
+docker ps -a
+Among other things, for this container you should see a container ID, the image name (hello-world), and a status that indicates that the container exited successfully.
+
+
+
+Note the CONTAINER ID from the previous output and replace the \ tag in the command below with this value. This command removes your container.
+docker container rm <container_id>
+
+
+Verify that that the container has been removed. Run the following command.
+docker ps -a
+
+
+Congratulations on pulling an image from Docker Hub and running your first container! Now let's try and build our own image.
+
+
+
+---exercise handson starts ---
 theia@theiadocker-anupamalal07:/home/project$  docker --version
 Docker version 20.10.7, build 20.10.7-0ubuntu5~18.04.3
 theia@theiadocker-anupamalal07:/home/project$ ibmcloud version
