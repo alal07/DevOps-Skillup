@@ -1,4 +1,4 @@
-excercise: copy paste start----
+excercise1: copy paste start----
 
 Pull an image from Docker Hub and run it as a container
 Use the docker CLI to list your images.
@@ -43,7 +43,7 @@ Congratulations on pulling an image from Docker Hub and running your first conta
 
 
 
----exercise handson starts ---
+---exercise1 handson starts ---
 theia@theiadocker-anupamalal07:/home/project$  docker --version
 Docker version 20.10.7, build 20.10.7-0ubuntu5~18.04.3
 theia@theiadocker-anupamalal07:/home/project$ ibmcloud version
@@ -164,3 +164,125 @@ theia@theiadocker-anupamalal07:/home/project/CC201/labs/1_ContainersAndDocker$ d
 theia@theiadocker-anupamalal07:/home/project/CC201/labs/1_ContainersAndDocker$ docker ps -a
 CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
 theia@theiadocker-anupamalal07:/home/project/CC201/labs/1_ContainersAndDocker$ 
+
+
+
+Exercise 2 - copy paste starts---------------------------------------------------
+Build an image using a Dockerfile
+The current working directory contains a simple Node.js application that we will run in a container. The app will print a hello message along with the hostname. The following files are needed to run the app in a container:
+app.js is the main application, which simply replies with a hello world message.
+package.json defines the dependencies of the application.
+Dockerfile defines the instructions Docker uses to build the image.
+Use the Explorer to view the files needed for this app. Click the Explorer icon (it looks like a sheet of paper) on the left side of the window, and then navigate to the directory for this lab: CC201 > labs > 1_ContainersAndDocker. Click Dockerfile to view the commands required to build an image.
+Dockerfile in Explorer
+
+You can refresh your understanding of the commands mentioned in the Dockerfile below:
+The FROM instruction initializes a new build stage and specifies the base image that subsequent instructions will build upon.
+The COPY command enables us to copy files to our image.
+The RUN instruction executes commands.
+The EXPOSE instruction exposes a particular port with a specified protocol inside a Docker Container.
+The CMD instruction provides a default for executing a container, or in other words, an executable that should run in your container.
+
+Run the following command to build the image:
+docker build . -t myimage:v1
+As seen in the module videos, the output creates a new layer for each instruction in the Dockerfile.
+
+
+
+List images to see your image tagged myimage:v1 in the table.
+docker images
+
+
+Note that compared to the hello-world image, this image has a different image ID. This means that the two images consist of different layers -- in other words, they're not the same image.
+
+You should also see a node image in the images output. This is because the docker build command pulled node:9.4.0-alpine to use it as the base image for the image you built.
+
+Exercise2 solution starts-----------------------------------------------------------
+theia@theiadocker-anupamalal07:/home/project/CC201/labs/1_ContainersAndDocker$ docker ps -a
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+theia@theiadocker-anupamalal07:/home/project/CC201/labs/1_ContainersAndDocker$ ls
+app.js  Dockerfile  package.json
+theia@theiadocker-anupamalal07:/home/project/CC201/labs/1_ContainersAndDocker$ cat app.js
+var express = require('express')
+var os = require("os");
+var hostname = os.hostname();
+var app = express()
+
+app.get('/', function(req, res) {
+  res.send('Hello world from ' + hostname + '! Your app is up and running!\n')
+})
+app.listen(8080, function() {
+  console.log('Sample app is listening on port 8080.')
+})
+theia@theiadocker-anupamalal07:/home/project/CC201/labs/1_ContainersAndDocker$ ls
+app.js  Dockerfile  package.json
+theia@theiadocker-anupamalal07:/home/project/CC201/labs/1_ContainersAndDocker$ cat package.json 
+{
+  "name": "hello-world-demo",
+  "private": false,
+  "version": "0.0.1",
+  "description": "Basic hello world application for Node.js",
+  "dependencies": {
+    "express": "4.x"
+  }
+}
+theia@theiadocker-anupamalal07:/home/project/CC201/labs/1_ContainersAndDocker$ docker build . -t myimage:v1
+Sending build context to Docker daemon  4.096kB
+Step 1/6 : FROM node:9.4.0-alpine
+9.4.0-alpine: Pulling from library/node
+605ce1bd3f31: Pull complete 
+fe58b30348fe: Pull complete 
+46ef8987ccbd: Pull complete 
+Digest: sha256:9cd67a00ed111285460a83847720132204185e9321ec35dacec0d8b9bf674adf
+Status: Downloaded newer image for node:9.4.0-alpine
+ ---> b5f94997f35f
+Step 2/6 : COPY app.js .
+ ---> 9a4902e67219
+Step 3/6 : COPY package.json .
+ ---> b0b980e771f3
+Step 4/6 : RUN npm install &&    apk update &&    apk upgrade
+ ---> Running in f95fbb6c64dd
+npm notice created a lockfile as package-lock.json. You should commit this file.
+npm WARN hello-world-demo@0.0.1 No repository field.
+npm WARN hello-world-demo@0.0.1 No license field.
+
+added 57 packages in 2.827s
+fetch http://dl-cdn.alpinelinux.org/alpine/v3.6/main/x86_64/APKINDEX.tar.gz
+fetch http://dl-cdn.alpinelinux.org/alpine/v3.6/community/x86_64/APKINDEX.tar.gz
+v3.6.5-44-gda55e27396 [http://dl-cdn.alpinelinux.org/alpine/v3.6/main]
+v3.6.5-34-gf0ba0b43d5 [http://dl-cdn.alpinelinux.org/alpine/v3.6/community]
+OK: 8448 distinct packages available
+Upgrading critical system libraries and apk-tools:
+(1/1) Upgrading apk-tools (2.7.5-r0 -> 2.7.6-r0)
+Executing busybox-1.26.2-r9.trigger
+Continuing the upgrade transaction with new apk-tools:
+(1/7) Upgrading musl (1.1.16-r14 -> 1.1.16-r15)
+(2/7) Upgrading busybox (1.26.2-r9 -> 1.26.2-r11)
+Executing busybox-1.26.2-r11.post-upgrade
+(3/7) Upgrading libressl2.5-libcrypto (2.5.5-r0 -> 2.5.5-r2)
+(4/7) Upgrading libressl2.5-libssl (2.5.5-r0 -> 2.5.5-r2)
+(5/7) Installing libressl2.5-libtls (2.5.5-r2)
+(6/7) Installing ssl_client (1.26.2-r11)
+(7/7) Upgrading musl-utils (1.1.16-r14 -> 1.1.16-r15)
+Executing busybox-1.26.2-r11.trigger
+OK: 5 MiB in 15 packages
+Removing intermediate container f95fbb6c64dd
+ ---> b1278b975187
+Step 5/6 : EXPOSE  8080
+ ---> Running in aad71164e50d
+Removing intermediate container aad71164e50d
+ ---> 4ac36b8a1908
+Step 6/6 : CMD node app.js
+ ---> Running in 7bd56ff2b81e
+Removing intermediate container 7bd56ff2b81e
+ ---> 746e48096c1e
+Successfully built 746e48096c1e
+Successfully tagged myimage:v1
+theia@theiadocker-anupamalal07:/home/project/CC201/labs/1_ContainersAndDocker$ docker images
+REPOSITORY    TAG            IMAGE ID       CREATED          SIZE
+myimage       v1             746e48096c1e   47 seconds ago   77.2MB
+hello-world   latest         feb5d9fea6a5   13 months ago    13.3kB
+node          9.4.0-alpine   b5f94997f35f   4 years ago      68MB
+theia@theiadocker-anupamalal07:/home/project/CC201/labs/1_ContainersAndDocker$ 
+
+
